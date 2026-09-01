@@ -1,3 +1,11 @@
+import fs from 'node:fs/promises'
+
+const RUTAS = {
+    texto1 : './archivo.txt',
+    texto2 : './archivo-2.txt'
+};
+
+
 // con await: 
 
 // esto solo funciona con ES Modules
