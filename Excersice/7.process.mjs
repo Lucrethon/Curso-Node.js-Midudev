@@ -4,7 +4,7 @@
 // tiene objetos y metodos que te permiten interactuar con el entorno de ejecución de node.js
 
 // argumentos de entrada 
-// recuperar los argumentos de entrada al ejecutar un comando de node 
+// recuperar los argumentos de entrada pasados al proceso por la línea de comandos cuando ejecutas tu script.
 console.log(process.argv) 
 // salida -> 
 // [
@@ -24,12 +24,13 @@ process.on('exit', () => {
 // nos dice desde que carpeta estamos ejecutando el proceso 
 console.log(process.cwd())
 
-// controlar el proceso y su salida: 
-// process.exit(1)
-// 0: el proceso se ejecuto correctamente y tiene que terminar ahi 
-// 1: ha habido un error y se necesita salir del proceso 
 
 //platform
 // para saber las variables de entorno: 
 console.log(process.env.NODE_ENV) // variable de entorno para producción o desarrollo
 console.log(process.env.PEPITO) // PEPITO=hola (definido en consola) Salida -> hola
+
+// controlar el proceso y su salida: 
+process.exit(1)
+// 0: el proceso se ejecuto correctamente y tiene que terminar ahi 
+// 1: ha habido un error y se necesita salir del proceso 
