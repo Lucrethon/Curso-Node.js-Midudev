@@ -18,3 +18,15 @@ fs.readFile(RUTAS.texto2, 'utf-8')
 .then(text => {
     console.log('segundo text',text)
 })
+//
+
+
+// si el modulo no tiene promesa: 
+import { promisify } from 'node:util'
+const readFilePomise = promisify(fs.readFile)
+// y se utiliza esta funcion de promesa: 
+
+readFilePomise(RUTAS.texto2, 'utf-8')
+.then(text => {
+    console.log('segundo text',text)
+})
