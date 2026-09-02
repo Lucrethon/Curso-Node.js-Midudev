@@ -14,7 +14,8 @@ async function getDirectory(folder) {
     let files
 
     try {
-        return files = await fs.readdir(folder)
+        files = await fs.readdir(folder)
+        return files
     }
     catch (err) {
         if (err) {
