@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path';
+import picocolors from 'picocolors';
+const pc = picocolors
 
 const folder = process.argv[2] ?? '.'
 // posicion 0: ruta absoluta al ejecutable de Node.js en el sistema
@@ -7,29 +9,30 @@ const folder = process.argv[2] ?? '.'
 // posición 2: Cualquier argumento personalizado que tú le pases en la terminal.
 // TODO lo devuelve en string 
 
-async function ls(folder) {
+async function getDirectory(folder) {
     console.log('carpeta a analizar:', folder)
     let files
 
     try {
-        files = await fs.readdir(folder)
+        return files = await fs.readdir(folder)
     }
-    catch {
+    catch (err) {
         if (err) {
-        console.log('Error al leer el directorio', err)
+        console.log(pc.red('Error al leer el directorio'))
         process.exit(1)
     }}
-
 }
 
 
-const filesPromises = files.map(async (file) => {
+async function getFiles(folder, files) {
+    
+    const filesPromises = files.map(async (file) => {
     const filePath = path.join(folder, file)
     let stats
     try {
         stats = await fs.stat(filePath) // información del archivo 
     }
-    catch {
+    catch (err) {
         if (err) {
             console.log('Error al leer el archivo')
             process.exit(1)
@@ -43,13 +46,19 @@ const filesPromises = files.map(async (file) => {
     const fileModified = stats.mtime.toLocaleString()
 
     return `${fileType} ${file.padEnd(40)} ${fileSize.toString().padStart(10)} ${fileModified}`
-})
+    })
+
+    return await Promise.all(filesPromises)
+}
 
 
+async function ls() {
+    const files = await getDirectory(folder)
+    const filesInfo = await getFiles(folder, files)
 
-const filesInfo = await Promise.all(filesPromises) // esto se hace porque estamos mapeando varios archivos y creando varias promesas 
-filesInfo.forEach(fileInfo => console.log(fileInfo))
+    filesInfo.forEach(fileInfo => console.log(fileInfo))
 
+}
 
 
 // se tienen que hacer dos try-catch porque son procesos diferentes: 
