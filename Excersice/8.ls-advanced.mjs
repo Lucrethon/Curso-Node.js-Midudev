@@ -18,7 +18,7 @@ async function getDirectory(folder) {
     }
     catch (err) {
         if (err) {
-        console.log(pc.red('Error al leer el directorio'))
+        console.log(pc.red('❌ Error al leer el directorio'))
         process.exit(1)
     }}
 }
@@ -34,7 +34,7 @@ async function getFiles(folder, files) {
     }
     catch (err) {
         if (err) {
-            console.log('Error al leer el archivo')
+            console.log(pc.red('Error al leer el archivo'))
             process.exit(1)
         }
     }
@@ -45,7 +45,11 @@ async function getFiles(folder, files) {
     const fileSize = stats.size // tamaño en bytes 
     const fileModified = stats.mtime.toLocaleString()
 
-    return `${fileType} ${file.padEnd(40)} ${fileSize.toString().padStart(10)} ${fileModified}`
+    const colorSize = (size) => {
+        return size < 1000 ? pc.green(size) : pc.red(size)
+    }
+
+    return `${fileType} ${pc.blue(file.padEnd(40))} ${colorSize(fileSize).toString().padStart(20)} ${pc.yellow(fileModified)}`
     })
 
     return await Promise.all(filesPromises)
