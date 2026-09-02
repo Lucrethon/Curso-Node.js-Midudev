@@ -1,13 +1,20 @@
 import http from 'node:http'
+import { findAvilablePort } from './10.free-port.mjs'
+
+const desiredPort = 3001
 
 const server = http.createServer((request, response) => {
     console.log('request received')
     response.end('Hola mundo')
 })
 
-server.listen(0 , () => {
+findAvilablePort(desiredPort).then(port => {
+    server.listen(port , () => {
     console.log(`server listening on port http://localhost:${server.address().port}`)
 })
+
+})
+
 
 // si el puerto esta en uso, se le puede pasar el puerto 0 
 // el puerto 0 lo que hace es que busca automaticamente el primer puerto que este disponible 
