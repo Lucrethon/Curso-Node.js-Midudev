@@ -26,6 +26,8 @@
     "picocolors": "1.1.1"
   },
   "devDependencies": {
-    "standard": "^17.1.2"
+    "@eslint/js": "10.0.1",
+    "eslint": "10.9.1",
+    "globals": "17.12.0"
   }
 }
