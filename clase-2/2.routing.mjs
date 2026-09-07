@@ -11,6 +11,7 @@ const processRequest = (req, res) => {
 
             switch(url) {
                 case '/pokemon/ditto': {
+                    res.statusCode = 200
                     res.setHeader('Content-Type', 'application/json; charset=utf-8')
                     return res.end(JSON.stringify(dittoData))
                     }
