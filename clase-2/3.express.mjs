@@ -34,8 +34,12 @@ app.post('/pokemon', (req, res) => {
         })
 })
 
-// cuando se hace una petición con express, se crea una nueva cabecera que HAY QUE QUITAR por temas de seguridad: 
-// X-Powered-By: Express
+// tratar el error 404
+// esto SIEMPRE tiene que ir de ultimo porque Express lee las peticiones en orden
+// se coloca .use porque eso engloba TODO TIPO de peticiones (GET, POST, PUT, etc)
+app.use((req, res) => {
+    res.status(404).send('<h1>Error 404</h1>')
+})
 
 app.listen(PORT, () => {
     console.log(`Server listening on port http://localhost:${PORT}`)
