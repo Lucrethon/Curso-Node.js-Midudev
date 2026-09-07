@@ -16,3 +16,16 @@ Content-Type: application/json
     "iron tail"
   ]
 }
+
+### Crear un nuevo pokemon en puerto 1234 con Express
+POST http://localhost:1234/pokemon
+
+{
+  "name": "Pikachu",
+  "type": "electric",
+  "moves" : [
+    "thunder shock",
+    "quick attack",
+    "iron tail"
+  ]
+}

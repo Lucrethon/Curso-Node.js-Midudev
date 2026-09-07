@@ -14,6 +14,19 @@ app.get('/json', (req, res) => {
     res.json({"message" : "Hola Mundo"})
 })
 
+app.post('/pokemon', (req, res) => {
+    let body = ''
+
+    req.on('data', chunk => {
+        body += chunk.toString()
+        })
+
+    req.on('end', () => {
+        const data = JSON.parse(body)
+        res.status(201).json(data)
+        })
+})
+
 app.listen(PORT, () => {
     console.log(`Server listening on port http://localhost:${PORT}`)
 })
