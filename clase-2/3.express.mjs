@@ -14,15 +14,38 @@ const PORT = process.env.PORT ?? 1234
 // Middleware: se ejecuta entre la petición (req) y la respuesta (res) para hacer cosas antes de procesar la respuesta (validar cookies, si el usuario esta loggeado, etc)
 // Una vez hecho las validaciones y procesos, se ejecuta la funcion next para seguir con el procesamiento de la response 
 
-// aqui le estamos diciendo que el middleware se va a ejecutar en todas las url que tengan /pokemon
+// podemos decirle al middleware que se va a ejecutar en todas las url que tengan /pokemon/
 // tambien puede ser para todo ('/')
 // tambien le estamos diciendo que es para todos los metodos con el use
 // pero podemos configurarlo para que sea con solo un tipo de metodo 
-app.use('/pokemon/', (req, res, next) => {
+app.use((req, res, next) => {
     console.log('mi primer middleware')
     // trackear la request a la base de datos
     // revisar las cookies del usuario 
-    next()
+
+    if (req.method !== 'POST') return next()
+    // si la peticion es diferente a post, vamos a la siguiente 
+    if (req.headers['content-type'] !== 'application/json') return next()
+    // si el content type de la request es un json, vamos a la siguiente 
+    
+    // aqui solo llegan request que son POST y que tienen el header Content-Type: application/json
+    let body = ''
+
+    req.on('data', chunk => {
+        body += chunk.toString()
+        })
+
+    req.on('end', () => {
+        const data = JSON.parse(body)
+        // una vez obtenida la data no vamos a responder 
+        // vamos a mutar la request y meter la información en el req.body
+        req.body = data
+        // el objeto request es unico para cada peticion 
+        // este objeto es el mismo que va a llegar mas adelante 
+        next()
+        })
+
+    //next()
     // es importante la funcion next para ejecutar la respuesta 
 })
 
@@ -40,16 +63,7 @@ app.get('/pokemon/ditto', (req, res) => {
 })
 
 app.post('/pokemon', (req, res) => {
-    let body = ''
-
-    req.on('data', chunk => {
-        body += chunk.toString()
-        })
-
-    req.on('end', () => {
-        const data = JSON.parse(body)
-        res.status(201).json(data)
-        })
+    res.status(201).json(req.body)
 })
 
 // tratar el error 404

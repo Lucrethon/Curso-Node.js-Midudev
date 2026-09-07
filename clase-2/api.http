@@ -19,6 +19,7 @@ Content-Type: application/json
 
 ### Crear un nuevo pokemon en puerto 1234 con Express
 POST http://localhost:1234/pokemon
+Content-Type: application/json
 
 {
   "name": "Pikachu",
