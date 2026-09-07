@@ -18,36 +18,41 @@ const PORT = process.env.PORT ?? 1234
 // tambien puede ser para todo ('/')
 // tambien le estamos diciendo que es para todos los metodos con el use
 // pero podemos configurarlo para que sea con solo un tipo de metodo 
-app.use((req, res, next) => {
-    console.log('mi primer middleware')
-    // trackear la request a la base de datos
-    // revisar las cookies del usuario 
 
-    if (req.method !== 'POST') return next()
-    // si la peticion es diferente a post, vamos a la siguiente 
-    if (req.headers['content-type'] !== 'application/json') return next()
-    // si el content type de la request es un json, vamos a la siguiente 
+
+
+// app.use((req, res, next) => {
+//     console.log('mi primer middleware')
+//     // trackear la request a la base de datos
+//     // revisar las cookies del usuario 
+
+//     if (req.method !== 'POST') return next()
+//     // si la peticion es diferente a post, vamos a la siguiente 
+//     if (req.headers['content-type'] !== 'application/json') return next()
+//     // si el content type de la request es un json, vamos a la siguiente 
     
-    // aqui solo llegan request que son POST y que tienen el header Content-Type: application/json
-    let body = ''
+//     // aqui solo llegan request que son POST y que tienen el header Content-Type: application/json
+//     let body = ''
 
-    req.on('data', chunk => {
-        body += chunk.toString()
-        })
+//     req.on('data', chunk => {
+//         body += chunk.toString()
+//         })
 
-    req.on('end', () => {
-        const data = JSON.parse(body)
-        // una vez obtenida la data no vamos a responder 
-        // vamos a mutar la request y meter la información en el req.body
-        req.body = data
-        // el objeto request es unico para cada peticion 
-        // este objeto es el mismo que va a llegar mas adelante 
-        next()
-        })
+//     req.on('end', () => {
+//         const data = JSON.parse(body)
+//         // una vez obtenida la data no vamos a responder 
+//         // vamos a mutar la request y meter la información en el req.body
+//         req.body = data
+//         // el objeto request es unico para cada peticion 
+//         // este objeto es el mismo que va a llegar mas adelante 
+//         next()
+//         })
+//     // es importante la funcion next para ejecutar la respuesta 
+// })
 
-    //next()
-    // es importante la funcion next para ejecutar la respuesta 
-})
+//Todo lo anterior del middleware se puede hacer en una sola linea y hace lo mismo: 
+
+app.use(express.json())
 
 
 //aqui estamos diciendo: cuando se haga una peticion (req) "GET" en la url "/", envia este body 
