@@ -1,1 +1,18 @@
+### Recuperar información de un Pokémon específico
+
 GET http://localhost:3002/pokemon/ditto
+
+### Para crear un nuevo Pokémon
+
+POST http://localhost:3002/pokemon
+Content-Type: application/json
+
+{
+  "name": "Pikachu",
+  "type": "electric",
+  "moves" : [
+    "thunder shock",
+    "quick attack",
+    "iron tail"
+  ]
+}
