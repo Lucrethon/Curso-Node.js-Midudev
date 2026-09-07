@@ -1,4 +1,6 @@
 import express from 'express'
+import dittoData from './pokemon/ditto.json' with { type: 'json' };
+
 const app = express()
 
 // cuando se hace una petición con express, se crea una nueva cabecera que HAY QUE QUITAR por temas de seguridad: 
@@ -15,8 +17,8 @@ app.get('/', (req, res) => {
 })
 
 // para enviar un json: 
-app.get('/json', (req, res) => {
-    res.json({"message" : "Hola Mundo"})
+app.get('/pokemon/ditto', (req, res) => {
+    res.json(dittoData)
 })
 
 app.post('/pokemon', (req, res) => {
