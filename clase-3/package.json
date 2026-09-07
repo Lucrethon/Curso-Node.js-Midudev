@@ -1,0 +1,18 @@
+{
+  "name": "clase-3",
+  "version": "1.0.0",
+  "description": "clase-3-curso-midudev",
+  "license": "ISC",
+  "author": "",
+  "type": "node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "standard": "17.1.2"
+  },
+  "dependencies": {
+    "express": "5.2.1"
+  }
+}
