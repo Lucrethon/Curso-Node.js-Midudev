@@ -1,6 +1,11 @@
 import express from 'express'
 const app = express()
 
+// cuando se hace una petición con express, se crea una nueva cabecera que HAY QUE QUITAR por temas de seguridad: 
+// X-Powered-By: Express
+// para desactivarla: 
+app.disable('x-powered-by')
+
 const PORT = process.env.PORT ?? 1234
 
 //aqui estamos diciendo: cuando se haga una peticion (req) "GET" en la url "/", envia este body 
@@ -26,6 +31,9 @@ app.post('/pokemon', (req, res) => {
         res.status(201).json(data)
         })
 })
+
+// cuando se hace una petición con express, se crea una nueva cabecera que HAY QUE QUITAR por temas de seguridad: 
+// X-Powered-By: Express
 
 app.listen(PORT, () => {
     console.log(`Server listening on port http://localhost:${PORT}`)
