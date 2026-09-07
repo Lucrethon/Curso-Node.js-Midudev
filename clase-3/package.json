@@ -4,7 +4,7 @@
   "description": "clase-3-curso-midudev",
   "license": "ISC",
   "author": "",
-  "type": "node",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
