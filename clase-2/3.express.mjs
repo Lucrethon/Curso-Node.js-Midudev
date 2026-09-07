@@ -10,8 +10,26 @@ app.disable('x-powered-by')
 
 const PORT = process.env.PORT ?? 1234
 
+
+// Middleware: se ejecuta entre la petición (req) y la respuesta (res) para hacer cosas antes de procesar la respuesta (validar cookies, si el usuario esta loggeado, etc)
+// Una vez hecho las validaciones y procesos, se ejecuta la funcion next para seguir con el procesamiento de la response 
+
+// aqui le estamos diciendo que el middleware se va a ejecutar en todas las url que tengan /pokemon
+// tambien puede ser para todo ('/')
+// tambien le estamos diciendo que es para todos los metodos con el use
+// pero podemos configurarlo para que sea con solo un tipo de metodo 
+app.use('/pokemon/', (req, res, next) => {
+    console.log('mi primer middleware')
+    // trackear la request a la base de datos
+    // revisar las cookies del usuario 
+    next()
+    // es importante la funcion next para ejecutar la respuesta 
+})
+
+
 //aqui estamos diciendo: cuando se haga una peticion (req) "GET" en la url "/", envia este body 
 // Express en la mayoria de los casos va a determinar autimaticamente el content type 
+
 app.get('/', (req, res) => {
     res.send('<h1>Mi pagina</h1>')
 })
