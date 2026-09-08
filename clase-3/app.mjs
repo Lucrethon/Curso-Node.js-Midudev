@@ -1,4 +1,5 @@
 import express from 'express'
+import movies from './movies.json' with { type: 'json' }
 
 const app = express()
 
@@ -8,6 +9,12 @@ app.disable('x-powered-by');
 
 app.get('/', (req, res) => {
     res.send('<h1>Mi Pagina</h1>')
+})
+
+// Recuperar (GET) las movies (GET the movies)
+// TODOS los recursos que sean MOVIES se identifican con /movies
+app.get('/movies', (req, res) => {
+    res.json(movies)
 })
 
 // Default error 404
