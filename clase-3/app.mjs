@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { json } from 'express'
 import movies from './movies.json' with { type: 'json' }
 
 const app = express()
@@ -15,6 +15,21 @@ app.get('/', (req, res) => {
 // TODOS los recursos que sean MOVIES se identifican con /movies
 app.get('/movies', (req, res) => {
     res.json(movies)
+})
+
+// GET movie by ID
+app.get('/movies/:id', (req, res) => { // path-to-regexp
+    // :id <-- Parametro dinamico de la url 
+    // ? <-- si se coloca al lado, puede esta como puede no estar
+    // + <-- puede haber mas de uno igual
+    // ()? <-- entre parentesis significa que es opcional 
+
+    // se captura de la siguiente forma para acceder a el después e identificar que recurso cargar:
+    const { id } = req.params
+    const movie = movies.find(movie => movie.id === id)
+    if (movie) return res.json(movie)
+    
+    res.status(404).json({ message: 'Movie not found' })
 })
 
 // Default error 404
