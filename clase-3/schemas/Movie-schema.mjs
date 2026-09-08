@@ -34,3 +34,10 @@ export function validateSchema (object) {
     // el safeParse te da un objeto result que te dice si hay un error o si hay datos
     // esto es para no hacer un try-catch con el simple parse 
 }
+
+// para hacer una verificacion parcial del objeto 
+export function validatePartialMovie (object) {
+    return movieSchema.partial().safeParse(object)
+    // esto hace que todos los parametros del objeto sean opcionales 
+    // si esta el parametro, lo validas 
+}
