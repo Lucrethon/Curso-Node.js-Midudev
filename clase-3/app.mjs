@@ -2,7 +2,8 @@ import express, { json } from 'express'
 import movies from './movies.json' with { type: 'json' }
 // para crear id's:
 import crypto from 'node:crypto'
-import { validateSchema } from './schemas/Movie-schema.mjs'
+import { validateSchema, validatePartialMovie } from './schemas/Movie-schema.mjs'
+import { read } from 'node:fs'
 
 
 const app = express()
@@ -77,6 +78,31 @@ app.post('/movies', (req, res) => {
     // const newMovie = {... req.body }
     // ESTO NO SE DEBE HACER. Por seguridad, siempre hay que extraer y validar los datos
     // Las validaciones NO LAS ARREGLA TYPESCRIPT
+
+})
+
+// actualizar y/o corregir pelicula con PATCH
+app.patch('/movies/:id', (req, res) => {
+    // validacion de datos de la request
+    const result = validatePartialMovie(req.body)
+    if (result.error || !result.success) {
+        res.status(400).json(JSON.parse(result.error.message))
+    }
+
+    // verificación de que la pelicula existe
+    const { id } = req.params
+    const movieIndex = movies.findIndex(movie => movie.id === id)
+    if (movieIndex === -1) return res.status(404).json({message: 'Error 404. Movie not found'})
+    
+    // actualizacion de datos de la pelicula 
+    const updatedMovie = {
+        ...movies[movieIndex],
+        ...result.data
+    }
+    // el id NO se puede cambiar porque no esta en la validacion del schema  
+
+    movies[movieIndex] = updatedMovie
+    return res.status(200).json(updatedMovie)
 
 })
 
