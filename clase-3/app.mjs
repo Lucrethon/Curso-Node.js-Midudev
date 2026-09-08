@@ -14,13 +14,24 @@ app.get('/', (req, res) => {
 // Recuperar (GET) las movies (GET the movies)
 // TODOS los recursos que sean MOVIES se identifican con /movies
 app.get('/movies', (req, res) => {
+    // Filter movies by genre
+    const { genre } = req.query
+
+    if (genre) {
+        const moviesByGenre = movies.filter((movie) => {
+            return movie.genre.some(g => g.toLocaleLowerCase() === genre.toLocaleLowerCase())
+            // array.some deuvleve true o false si al menos uno de los elementos dentro del array cumple con la condicion del callback. No modifica el array original 
+        })
+        return res.json(moviesByGenre)
+    }
+
     res.json(movies)
 })
 
 // GET movie by ID
 app.get('/movies/:id', (req, res) => { // path-to-regexp
     // :id <-- Parametro dinamico de la url 
-    // ? <-- si se coloca al lado, puede esta como puede no estar
+    // ? <-- si se coloca al lado, puede estar como puede no estar
     // + <-- puede haber mas de uno igual
     // ()? <-- entre parentesis significa que es opcional 
 
@@ -31,6 +42,7 @@ app.get('/movies/:id', (req, res) => { // path-to-regexp
     
     res.status(404).json({ message: 'Movie not found' })
 })
+
 
 // Default error 404
 app.use((req, res) => {
