@@ -20,6 +20,14 @@ app.get('/', (req, res) => {
 // Recuperar (GET) las movies (GET the movies)
 // TODOS los recursos que sean MOVIES se identifican con /movies
 app.get('/movies', (req, res) => {
+
+    // CORS error: Missing Allow Origin Header 
+    // cuando alguien intenta hacer un fetch de datos a nuestra API y NO tenemos una cabezera que lo permita
+    // los navegadores van a lanzar el error cors. esto solo pasa en los navegadores 
+
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080')
+    // * <- si se coloca solo asterisco, todos los origenes estan permitidos 
+
     // Filter movies by genre
     const { genre } = req.query
 
