@@ -2,6 +2,8 @@ import express, { json } from 'express'
 import movies from './movies.json' with { type: 'json' }
 // para crear id's:
 import crypto from 'node:crypto'
+import { validateSchema } from './schemas/Movie-schema.mjs'
+
 
 const app = express()
 
@@ -46,21 +48,21 @@ app.get('/movies/:id', (req, res) => { // path-to-regexp
     res.status(404).json({ message: 'Movie not found' })
 })
 
+
+// create new movie
 app.post('/movies', (req, res) => {
-    const {
-        title, 
-        year,
-        director,
-        duration, 
-        poster, 
-        genre,
-        rate
-    } = req.body
+
+    // validaciones con zod:
+    const result = validateSchema(req.body)
+
+    // validar si hay errores: 
+    if (result.error) {
+        return res.status(400).json({ error: result.error.message })
+    }
 
     const newMovie = {
         id: crypto.randomUUID(), // crea un uuid verion 4
-        ... req.body,
-        rate: rate ?? 0,
+        ...result.data
     }
 
     // esto no seria REST porque estamos guardando
@@ -70,6 +72,12 @@ app.post('/movies', (req, res) => {
     // aqui indicamos que se ha creado el recurso
     // también devolvemos el recurso que hemos creado para actualizar la cache del cliente 
     res.status(201).json(newMovie)
+
+    // const { title,  ...} = req.body
+    // const newMovie = {... req.body }
+    // ESTO NO SE DEBE HACER. Por seguridad, siempre hay que extraer y validar los datos
+    // Las validaciones NO LAS ARREGLA TYPESCRIPT
+
 })
 
 // Default error 404
