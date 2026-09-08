@@ -12,7 +12,7 @@ const movieSchema = z.object({
     year: z.number().int().min(1900).max(2027),
     director: z.string(),
     duration: z.number().int().positive(), 
-    poster: z.string().url().endsWith('.jpg'), 
+    poster: z.string().endsWith('.jpg'), 
     genre: z.array(
         z.enum([
             "Action",
@@ -26,7 +26,7 @@ const movieSchema = z.object({
             "Sci-Fi"
         ])
     ),
-    rate: z.number().min(0).max(10)    
+    rate: z.number().min(0).max(10).default(0) // <-- Campo pcional con valor por defecto
 })
 
 export function validateSchema (object) {
