@@ -8,4 +8,21 @@ GET http://localhost:1234/movies/1
 
 ### Recuperar todas las peliculas por genero
 
-GET http://localhost:1234/movies?genre=accion
+GET http://localhost:1234/movies?genre=action
+
+### Crear una pelicula (nota: NO puede haber una coma al final del ultimo elemento)
+
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+    "title": "The Godfather",
+    "year": 1972,
+    "director": "Francis Ford Coppola",
+    "duration": 175,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg",
+    "genre": [
+        "Crime",
+        "Drama"
+    ]
+}

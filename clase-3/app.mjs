@@ -1,10 +1,13 @@
 import express, { json } from 'express'
 import movies from './movies.json' with { type: 'json' }
+// para crear id's:
+import crypto from 'node:crypto'
 
 const app = express()
 
 const PORT = process.env.PORT ?? 1234
 
+app.use(express.json())
 app.disable('x-powered-by');
 
 app.get('/', (req, res) => {
@@ -43,6 +46,31 @@ app.get('/movies/:id', (req, res) => { // path-to-regexp
     res.status(404).json({ message: 'Movie not found' })
 })
 
+app.post('/movies', (req, res) => {
+    const {
+        title, 
+        year,
+        director,
+        duration, 
+        poster, 
+        genre,
+        rate
+    } = req.body
+
+    const newMovie = {
+        id: crypto.randomUUID(), // crea un uuid verion 4
+        ... req.body,
+        rate: rate ?? 0,
+    }
+
+    // esto no seria REST porque estamos guardando
+    // el estado de la aplicacion en memoria 
+    movies.push(newMovie)
+
+    // aqui indicamos que se ha creado el recurso
+    // también devolvemos el recurso que hemos creado para actualizar la cache del cliente 
+    res.status(201).json(newMovie)
+})
 
 // Default error 404
 app.use((req, res) => {
