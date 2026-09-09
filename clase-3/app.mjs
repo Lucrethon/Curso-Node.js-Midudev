@@ -3,7 +3,13 @@ import movies from './movies.json' with { type: 'json' }
 // para crear id's:
 import crypto from 'node:crypto'
 import { validateSchema, validatePartialMovie } from './schemas/Movie-schema.mjs'
-import { read } from 'node:fs'
+
+
+// metodos normales: GET, HEAD, POST
+// metodos complejos: PUT, PATCH, DELETE
+
+// el error CORS en los metodos complejos existe algo llamado CORS PRE-Flight
+// con los metodos complejos se hace una peticion previa adicional llamada OPTIONS
 
 
 const app = express()
@@ -19,8 +25,8 @@ app.get('/', (req, res) => {
 
 // origenes aceptados para hacer requests a nuestra api: 
 const ACCEPTED_ORIGINS = [
-    'http://localhost:8080/',
-    'http://localhost:1234/',
+    'http://localhost:8080',
+    'http://localhost:1234',
     'http://movies.com'
 ]
 
@@ -73,7 +79,7 @@ app.get('/movies/:id', (req, res) => { // path-to-regexp
 })
 
 
-// create new movie
+// create new movie (POST)
 app.post('/movies', (req, res) => {
 
     // validaciones con zod:
@@ -127,6 +133,36 @@ app.patch('/movies/:id', (req, res) => {
     movies[movieIndex] = updatedMovie
     return res.status(200).json(updatedMovie)
 
+})
+
+// Delete movie (DELETE)
+app.delete('/movies/:id', (req, res) => {
+
+    const origin = req.header('origin'); 
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
+
+
+    const { id } = req.params
+    const movieIndex = movies.findIndex(movie => movie.id === id)
+    if (movieIndex === -1) return res.status(404).json({ message: 'Error 404. Movie not found'})
+    
+    const movie = movies[movieIndex]
+    movies.splice(movieIndex, 1)
+    return res.json({...movie, message : 'Movie deleted'})
+
+})
+
+app.options('/movies/:id', (req, res) => {
+    // hay que pasarle al metodo options la cabezera de que metodos estan habilitados para hacer peticiones
+    const origin = req.header('origin'); 
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+        res.header('Access-Control-Allow-Origin', origin)
+        // y ademas una cabecera adicional que indica que metodos pueden usar
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+    }
+    res.send(200)
 })
 
 // Default error 404
