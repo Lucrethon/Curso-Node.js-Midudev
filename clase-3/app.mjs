@@ -17,6 +17,13 @@ app.get('/', (req, res) => {
     res.send('<h1>Mi Pagina</h1>')
 })
 
+// origenes aceptados para hacer requests a nuestra api: 
+const ACCEPTED_ORIGINS = [
+    'http://localhost:8080/',
+    'http://localhost:1234/',
+    'http://movies.com'
+]
+
 // Recuperar (GET) las movies (GET the movies)
 // TODOS los recursos que sean MOVIES se identifican con /movies
 app.get('/movies', (req, res) => {
@@ -25,8 +32,16 @@ app.get('/movies', (req, res) => {
     // cuando alguien intenta hacer un fetch de datos a nuestra API y NO tenemos una cabezera que lo permita
     // los navegadores van a lanzar el error cors. esto solo pasa en los navegadores 
 
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080')
-    // * <- si se coloca solo asterisco, todos los origenes estan permitidos 
+    // solicitamos el origen de la request y validamos si es de un origen aceptado 
+    const origin = req.header('origin'); 
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+        // el navegador no envia el header origin cuando la request se esta haciendo desde el mismo ORIGIN
+        // es decir: request desde http://localhost:1234/ a http://localhost:1234/
+        res.header('Access-Control-Allow-Origin', origin)
+        // * <- si se coloca solo asterisco, todos los origenes estan permitidos 
+    }
+
+
 
     // Filter movies by genre
     const { genre } = req.query
