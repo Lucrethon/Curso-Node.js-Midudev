@@ -1,27 +1,15 @@
 import express, { json } from 'express'
-import cors from 'cors'
 import { moviesRouter } from './Routes/movies.mjs'
+import { corsMiddleware } from './middlewares/cors.mjs'
 
 const app = express()
 
 const PORT = process.env.PORT ?? 1234
-// origenes aceptados para hacer requests a nuestra api: 
-const ACCEPTED_ORIGINS = [
-    'http://localhost:8080',
-    'http://localhost:1234',
-    'http://movies.com'
-]
+
 
 app.use(express.json())
 app.disable('x-powered-by');
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || ACCEPTED_ORIGINS.includes(origin)) {
-        return callback(null, true)
-    }
-    return callback(new Error('Not allowed by CORS'))
-  }
-}))
+app.use(corsMiddleware)
 
 app.get('/', (req, res) => {
     res.send('<h1>Mi Pagina</h1>')
