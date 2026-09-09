@@ -36,9 +36,30 @@
                     <h2>${movie.title}</h2>
                     <img src=${movie.poster} alt=${movie.title}></img>
                     <p>${movie.year}</p>
+                    <button>Delete</button>
                 </article>`)
             }).join('')
             document.querySelector('main').innerHTML = html
+
+            
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const article = event.target.parentElement
+                    const id = article.dataset.id
+                    fetch(`http://localhost:1234/movies/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            article.remove()
+                        }
+                        return response.json()
+                    })
+                    .then(result => {
+                        console.log(result)
+                    })
+                })
+            })
         })
     </script>
   </body>
