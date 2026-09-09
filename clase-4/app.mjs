@@ -9,7 +9,7 @@ const PORT = process.env.PORT ?? 1234
 
 app.use(express.json())
 app.disable('x-powered-by');
-app.use(corsMiddleware)
+app.use(corsMiddleware())
 
 app.get('/', (req, res) => {
     res.send('<h1>Mi Pagina</h1>')

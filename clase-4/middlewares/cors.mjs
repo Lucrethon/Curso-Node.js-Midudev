@@ -6,11 +6,14 @@ const ACCEPTED_ORIGINS = [
     'http://movies.com'
 ]
 
-export const corsMiddleware = cors({
-    origin: (origin, callback) => {
-        if (!origin || ACCEPTED_ORIGINS.includes(origin)) {
-        return callback(null, true)
+export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => {
+    return cors({
+        origin: (origin, callback) => {
+            if (!origin || acceptedOrigins.includes(origin)) {
+            return callback(null, true)
+        }
+        return callback(new Error('Not allowed by CORS'))
     }
-    return callback(new Error('Not allowed by CORS'))
-  }
-})
+    })
+}
+    
