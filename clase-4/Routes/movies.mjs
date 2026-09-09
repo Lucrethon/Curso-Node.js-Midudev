@@ -32,7 +32,6 @@ moviesRouter.get('/:id', (req, res) => { // path-to-regexp
     res.status(404).json({ message: 'Movie not found' })
 })
 
-
 // create new movie (POST)
 moviesRouter.post('/', (req, res) => {
 
