@@ -3,6 +3,7 @@ import movies from './movies.json' with { type: 'json' }
 // para crear id's:
 import crypto from 'node:crypto'
 import { validateSchema, validatePartialMovie } from './schemas/Movie-schema.mjs'
+import cors from 'cors'
 
 
 // metodos normales: GET, HEAD, POST
@@ -15,20 +16,37 @@ import { validateSchema, validatePartialMovie } from './schemas/Movie-schema.mjs
 const app = express()
 
 const PORT = process.env.PORT ?? 1234
-
-app.use(express.json())
-app.disable('x-powered-by');
-
-app.get('/', (req, res) => {
-    res.send('<h1>Mi Pagina</h1>')
-})
-
 // origenes aceptados para hacer requests a nuestra api: 
 const ACCEPTED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:1234',
     'http://movies.com'
 ]
+
+app.use(express.json())
+
+app.use(cors({
+    // aqui en lugar de pasar un string, pasamos una funcion: 
+    // 1mer parametro (origin): El valor de la cabecera Origin enviada por el cliente
+    // 2do parametro (callback): función interna de la librería que se invoca para indicar si se acepta o rechaza ese origen. Sigue la convención clásica de Node.js: callback(error, resultado)
+    origin: (origin, callback) => {
+        if (!origin || ACCEPTED_ORIGINS.includes(origin)) {
+        // si se cumple la condición de que el origen es conocido, se retorna la funcion:
+        // El primer parámetro es null, indicando que no hubo ningún error.
+        // El segundo parámetro es true, indicando que el origen es válido.
+        return callback(null, true)
+    }
+    return callback(new Error('Not allowed by CORS'))
+    // si el origen no es aceptado se pasa un objeto Error como primer argumento.
+  }
+}))
+
+app.disable('x-powered-by');
+
+app.get('/', (req, res) => {
+    res.send('<h1>Mi Pagina</h1>')
+})
+
 
 // Recuperar (GET) las movies (GET the movies)
 // TODOS los recursos que sean MOVIES se identifican con /movies
@@ -38,16 +56,14 @@ app.get('/movies', (req, res) => {
     // cuando alguien intenta hacer un fetch de datos a nuestra API y NO tenemos una cabezera que lo permita
     // los navegadores van a lanzar el error cors. esto solo pasa en los navegadores 
 
-    // solicitamos el origen de la request y validamos si es de un origen aceptado 
-    const origin = req.header('origin'); 
-    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-        // el navegador no envia el header origin cuando la request se esta haciendo desde el mismo ORIGIN
-        // es decir: request desde http://localhost:1234/ a http://localhost:1234/
-        res.header('Access-Control-Allow-Origin', origin)
-        // * <- si se coloca solo asterisco, todos los origenes estan permitidos 
-    }
-
-
+    // // solicitamos el origen de la request y validamos si es de un origen aceptado 
+    // const origin = req.header('origin'); 
+    // if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    //     // el navegador no envia el header origin cuando la request se esta haciendo desde el mismo ORIGIN
+    //     // es decir: request desde http://localhost:1234/ a http://localhost:1234/
+    //     res.header('Access-Control-Allow-Origin', origin)
+    //     // * <- si se coloca solo asterisco, todos los origenes estan permitidos 
+    // }
 
     // Filter movies by genre
     const { genre } = req.query
@@ -138,12 +154,6 @@ app.patch('/movies/:id', (req, res) => {
 // Delete movie (DELETE)
 app.delete('/movies/:id', (req, res) => {
 
-    const origin = req.header('origin'); 
-    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-        res.header('Access-Control-Allow-Origin', origin)
-    }
-
-
     const { id } = req.params
     const movieIndex = movies.findIndex(movie => movie.id === id)
     if (movieIndex === -1) return res.status(404).json({ message: 'Error 404. Movie not found'})
@@ -154,16 +164,16 @@ app.delete('/movies/:id', (req, res) => {
 
 })
 
-app.options('/movies/:id', (req, res) => {
-    // hay que pasarle al metodo options la cabezera de que metodos estan habilitados para hacer peticiones
-    const origin = req.header('origin'); 
-    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-        res.header('Access-Control-Allow-Origin', origin)
-        // y ademas una cabecera adicional que indica que metodos pueden usar
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
-    }
-    res.send(200)
-})
+// app.options('/movies/:id', (req, res) => {
+//     // hay que pasarle al metodo options la cabezera de que metodos estan habilitados para hacer peticiones
+//     const origin = req.header('origin'); 
+//     if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+//         res.header('Access-Control-Allow-Origin', origin)
+//         // y ademas una cabecera adicional que indica que metodos pueden usar
+//         res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+//     }
+//     res.send(200)
+// })
 
 // Default error 404
 app.use((req, res) => {
