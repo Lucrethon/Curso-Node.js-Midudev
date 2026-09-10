@@ -3,22 +3,15 @@ import movies from '../movies.json' with { type: 'json' }
 // para crear id's:
 import crypto from 'node:crypto'
 import { validateSchema, validatePartialMovie } from '../schemas/Movie-schema.mjs'
+import { MovieModel } from "../models/movie";
 
 export const moviesRouter = Router()
 
 // TODOS los recursos que sean MOVIES se identifican con /movies
-moviesRouter.get('/', (req, res) => {
-
-    // Filter movies by genre
+moviesRouter.get('/', async (req, res) => {
+    // este metodo tiene que ser ASINCRONO porque este modelo tiene que tratar con datos asincronos
     const { genre } = req.query
-
-    if (genre) {
-        const moviesByGenre = movies.filter((movie) => {
-            return movie.genre.some(g => g.toLocaleLowerCase() === genre.toLocaleLowerCase())
-        })
-        return res.json(moviesByGenre)
-    }
-
+    const movies = await MovieModel.GetAll({ genre })
     res.json(movies)
 })
 
