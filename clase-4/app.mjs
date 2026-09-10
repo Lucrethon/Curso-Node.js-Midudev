@@ -1,4 +1,4 @@
-import express, { json } from 'express'
+import express from 'express'
 import { moviesRouter } from './Routes/movies.mjs'
 import { corsMiddleware } from './middlewares/cors.mjs'
 

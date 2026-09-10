@@ -43,10 +43,10 @@ moviesRouter.patch('/:id', async (req, res) => {
     if (result.error || !result.success) {
         res.status(400).json(JSON.parse(result.error.message))
     }
-
+    if (!result.success) return res.status(404).json({message: 'Error 404. Movie not found'})
+    
     const { id } = req.params
     const updatedMovie = await MovieModel.UpdateMovie({ id : id, input: result.data})
-    if (!updatedMovie) return res.status(404).json({message: 'Error 404. Movie not found'})
     return res.status(200).json(updatedMovie)
 
 })
