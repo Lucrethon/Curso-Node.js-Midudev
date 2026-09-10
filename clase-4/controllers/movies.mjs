@@ -50,7 +50,7 @@ export class MovieController {
     static DeleteMovie = async (req, res) => {
 
     const { id } = req.params
-    const deletedMovie = await MovieModel.DeleteMovie(id)
+    const deletedMovie = await MovieModel.DeleteMovie({id})
 
     if (!deletedMovie) return res.status(404).json({ message: 'Error 404. Movie not found'})
     return res.json({...deletedMovie, message : 'Movie deleted'})
