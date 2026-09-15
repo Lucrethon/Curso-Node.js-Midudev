@@ -1,5 +1,5 @@
 // el controller es el que decide que renderiza la vista (view)
-import { MovieModel } from "../models/movie.mjs";
+import { MovieModel } from "../models/local-file-system/movie.mjs";
 import { validateSchema, validatePartialMovie } from "../schemas/Movie-schema.mjs";
 
 export class MovieController {
