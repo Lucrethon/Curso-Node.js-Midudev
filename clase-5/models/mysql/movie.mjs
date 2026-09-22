@@ -52,15 +52,53 @@ export class MovieModel {
 
     static GetById = async ({ id }) => {
 
-        const [movie] = connection.query(
+        const [movie] = await connection.query(
             `SELECT * FROM movies
-            WHERE movie_id =${id}`
+            WHERE movie_id = ?`, [id]
         )
         if (movie) return movie
     }
 
     static CreateMovie = async ({input}) => {
+        const {
+            genre: genreInput, // Extraemos genre para no enviarlo a la tabla movies
+            title,
+            year,
+            director,
+            duration,
+            poster,
+            rate,
+        } = input;
+
+        const movie_id = crypto.randomUUID()
+
+        await connection.query(
+            "INSERT INTO movies (BIN_TO_UUID(movie_id) AS movie_id, title, year, director, duration, poster, rate) VALUES (?, ?, ?, ?, ?, ?, ?)", [
+                movie_id,                 
+                title,
+                year,
+                director,
+                duration,
+                poster,
+                rate]
+        ); 
         
+        if (genreInput && genreInput.length > 0) {
+            for (const genre of genreInput) {
+                const genreLoweCase = genre.toLowerCase()
+                await connection.query(
+                    `INSERT INTO movie_genres VALUES
+                        (?, (SELECT genre_id FROM genres WHERE LOWER(name) = ?))
+                    `, [movie_id, genreLoweCase]
+                )
+            }
+        }
+
+        return {
+            movie_id, 
+            ...input
+        }
+
     }
 
     static DeleteMovie = async ({ id }) => {
