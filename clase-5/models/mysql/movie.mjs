@@ -73,7 +73,8 @@ export class MovieModel {
         const movie_id = crypto.randomUUID()
 
         await connection.query(
-            "INSERT INTO movies (BIN_TO_UUID(movie_id) AS movie_id, title, year, director, duration, poster, rate) VALUES (?, ?, ?, ?, ?, ?, ?)", [
+            `INSERT INTO movies (movie_id, title, year, director, duration, poster, rate) VALUES 
+            (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?)`, [
                 movie_id,                 
                 title,
                 year,
@@ -88,7 +89,7 @@ export class MovieModel {
                 const genreLowerCase = genre.toLowerCase()
                 await connection.query(
                     `INSERT INTO movie_genres VALUES
-                        (?, (SELECT genre_id FROM genres WHERE LOWER(name) = ?))
+                        (UUID_TO_BIN(?), (SELECT genre_id FROM genres WHERE LOWER(name) = ?))
                     `, [movie_id, genreLowerCase]
                 )
             }
@@ -102,7 +103,7 @@ export class MovieModel {
     }
 
     static DeleteMovie = async ({ id }) => {
-        const [deleted_movie] = await connection.query(`SELECT BIN_TO_UUID(movie_id) AS movie_id, title FROM movies WHERE movie_id = ?`, [id]); 
+        const [deleted_movie] = await connection.query(`SELECT BIN_TO_UUID(movie_id) AS movie_id, title FROM movies WHERE movie_id = UUID_TO_BIN(?)`, [id]); 
         if (deleted_movie.length === 0) return false
 
         await connection.query(`DELETE FROM movie_genres WHERE movie_id = UUID_TO_BIN(?)`, [id])
