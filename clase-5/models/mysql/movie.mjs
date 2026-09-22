@@ -85,11 +85,11 @@ export class MovieModel {
         
         if (genreInput && genreInput.length > 0) {
             for (const genre of genreInput) {
-                const genreLoweCase = genre.toLowerCase()
+                const genreLowerCase = genre.toLowerCase()
                 await connection.query(
                     `INSERT INTO movie_genres VALUES
                         (?, (SELECT genre_id FROM genres WHERE LOWER(name) = ?))
-                    `, [movie_id, genreLoweCase]
+                    `, [movie_id, genreLowerCase]
                 )
             }
         }
@@ -102,6 +102,13 @@ export class MovieModel {
     }
 
     static DeleteMovie = async ({ id }) => {
+        const [deleted_movie] = await connection.query(`SELECT BIN_TO_UUID(movie_id) AS movie_id, title FROM movies WHERE movie_id = ?`, [id]); 
+        if (deleted_movie.length === 0) return false
+
+        await connection.query(`DELETE FROM movie_genres WHERE movie_id = UUID_TO_BIN(?)`, [id])
+        await connection.query(`DELETE FROM movies WHERE movie_id = UUID_TO_BIN(?)`, [id])
+        
+        return deleted_movie
 
     }
 
