@@ -114,11 +114,34 @@ export class MovieModel {
     }
 
     static UpdateMovie = async ({ id, input }) => {
-    // verificación de que la pelicula existe
 
-    // actualizacion de datos de la pelicula 
+        const { genre: genreInput, ...movieData } = input
 
-    // el id NO se puede cambiar porque no esta en la validacion del schema  
+        const movieFields = Object.keys(movieData)
+        if (movieFields.length > 0) {
+            const sqlClause = movieFields.map(key => `${key} = ?`).join(', ');
+            const sqlParamaters = Object.values(movieData);
+            const sqlQuery = `UPDATE movies SET ${sqlClause} WHERE movie_id = UUID_TO_BIN(?);`
+            const [result] = await connection.query(sqlQuery, [...sqlParamaters, id])
 
+            // Si la película no existe en la BD, salimos inmediatamente
+            if (result.affectedRows === 0) return false
+        }
+
+        if (genreInput && genreInput.length > 0) {
+            // eliminar los generos anteriores de la pelicula 
+            await connection.query(`DELETE FROM movie_genres WHERE movie_id = UUID_TO_BIN(?);`, [id])
+
+            for (const genre of genreInput) {
+                const genreLowerCase = genre.toLowerCase()
+                await connection.query(
+                    `INSERT INTO movie_genres (movie_id, genre_id) VALUES
+                        (UUID_TO_BIN(?), (SELECT genre_id FROM genres WHERE LOWER(name) = ?));
+                    `, [id, genreLowerCase]
+                )
+            }
+        }
+
+        return true
     }
 }
