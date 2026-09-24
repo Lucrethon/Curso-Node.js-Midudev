@@ -3,7 +3,7 @@ import { validateSchema, validatePartialMovie } from "../schemas/Movie-schema.mj
 
 export class MovieController {
 
-    constructor(movieModel) {
+    constructor({movieModel}) {
         this.movieModel = movieModel
     }
 
