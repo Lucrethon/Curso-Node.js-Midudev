@@ -1,22 +1,26 @@
 import { Router } from "express";
 import { MovieController } from "../controllers/movies.mjs";
-import { MovieModel } from "../models/mysql/movie.mjs";
 
-const movieController = new MovieController({ movieModel : MovieModel})
 
-export const moviesRouter = Router()
+export const createMoviesRouter = ({movieModel}) => {
 
-// TODOS los recursos que sean MOVIES se identifican con /movies
-moviesRouter.get('/', movieController.GetAll)
+    const moviesRouter = Router()
+    const movieController = new MovieController({ movieModel })
 
-// GET movie by ID
-moviesRouter.get('/:id', movieController.GetById)
+    // TODOS los recursos que sean MOVIES se identifican con /movies
+    moviesRouter.get('/', movieController.GetAll)
 
-// create new movie (POST)
-moviesRouter.post('/', movieController.CreateMovie)
+    // GET movie by ID
+    moviesRouter.get('/:id', movieController.GetById)
 
-// actualizar y/o corregir pelicula con PATCH
-moviesRouter.patch('/:id', movieController.UpdateMovie)
+    // create new movie (POST)
+    moviesRouter.post('/', movieController.CreateMovie)
 
-// Delete movie (DELETE)
-moviesRouter.delete('/:id', movieController.DeleteMovie)
+    // actualizar y/o corregir pelicula con PATCH
+    moviesRouter.patch('/:id', movieController.UpdateMovie)
+
+    // Delete movie (DELETE)
+    moviesRouter.delete('/:id', movieController.DeleteMovie)
+
+    return moviesRouter
+}

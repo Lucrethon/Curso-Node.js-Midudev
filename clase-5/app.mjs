@@ -1,6 +1,7 @@
 import express from 'express'
-import { moviesRouter } from './Routes/movies.mjs'
 import { corsMiddleware } from './middlewares/cors.mjs'
+import { createMoviesRouter } from './Routes/movies.mjs'
+import { MovieModel } from './models/mysql/movie.mjs'
 
 const app = express()
 
@@ -16,7 +17,7 @@ app.get('/', (req, res) => {
 })
 
 // TODOS los recursos que sean MOVIES se identifican con /movies
-app.use('/movies', moviesRouter)
+app.use('/movies', createMoviesRouter({ movieModel: MovieModel }))
 
 // Default error 404
 app.use((req, res) => {
