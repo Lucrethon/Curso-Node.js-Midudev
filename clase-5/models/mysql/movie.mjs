@@ -88,7 +88,7 @@ export class MovieModel {
             for (const genre of genreInput) {
                 const genreLowerCase = genre.toLowerCase()
                 await connection.query(
-                    `INSERT INTO movie_genres VALUES
+                    `INSERT INTO movie_genres (movie_id, genre_id) VALUES
                         (UUID_TO_BIN(?), (SELECT genre_id FROM genres WHERE LOWER(name) = ?))
                     `, [movie_id, genreLowerCase]
                 )
