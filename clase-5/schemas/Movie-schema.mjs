@@ -1,4 +1,4 @@
-import z, { object } from 'zod'
+import z from 'zod'
 
     // utilizamos la libreria zod para validar los datos
     // aqui vamos a validar solo el objeto que entra de la rquest y hacer su schema (esquema)
