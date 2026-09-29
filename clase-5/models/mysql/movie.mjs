@@ -9,8 +9,14 @@ const config = {
     database: 'moviesdb'
 };
 
+// 
+
 // conectar a la base de datos: 
-const connection = await mysql.createConnection(config)
+const connection = await mysql.createConnection(process.env.DATABASE_URL ?? config)
+
+if (process.env.DATABASE_URL) {
+    console.log('ejecutandose en servidor en la nube')
+}
 
 export class MovieModel {
 
